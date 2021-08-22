@@ -79,26 +79,13 @@
             </div>
             <div class="flex flex-col justify-center w-2/4 items-center">
                 <div class="flex items-center">
-                    <audio src="fav.m4a" preload="metadata" loop ref="audio" />
                     <button class="mx-3 text-lightest hover:text-white"><i class="material-icons text-base">shuffle</i></button>
                     <button class="text-lightest hover:text-white"><i class="material-icons text-base">skip_previous</i></button>
-                    <button @click="playSong()" class="rounded-full h-8 w-8 flex items-center justify-center mx-3 boder-lightest border text-lightest hover:text-white"><i class="material-icons">play_arrow</i></button>
+                    <button @click="playSong()" class="rounded-full h-8 w-8 flex items-center justify-center mx-3 boder-lightest border text-lightest hover:text-white"><i class="material-icons">{{ (playState === 'play')?'play_arrow':'pause' }}</i></button>
                     <button class="text-lightest hover:text-white"><i class="material-icons text-base">skip_next</i></button>
                     <button class="mx-3 text-lightest hover:text-white"><i class="material-icons text-base">repeat</i></button>
                 </div>
-                <div class="w-3/4 flex items-center justify-center mt-3">
-                <p class="text-xs text-lightest mr-1" ref="current">0:00</p>
-                <div class="range-slider w-full" style='--min:0; --max:100; --step:1; --value:0; --text-value:"0";'>
-                  <input ref="seekslider" type="range" min="0" max="100" oninput="this.parentNode.style.setProperty('--value',this.value); this.parentNode.style.setProperty('--text-value', JSON.stringify(this.value))">
-                  <div class='range-slider__progress'></div>
-                </div>              <!-- <div class="w-full h-1 bg-dark rounded-full flex items-center">
-                        <div class="h-1 rounded-full bg-green" style="width: 18%;">
-                        </div>
-                        <div class="h-2 w-2 bg-white rounded-full -ml-1 whadow">
-                        </div>
-                    </div> -->
-                    <p class="text-xs text-lightest ml-1" ref="duration">2:40</p>
-                </div>
+                <Player :playState="playState" />
             </div>
             <div class="flex items-center w-1/4 justify-end">
                 <i class="material-icons text-lightest hover:text-white">playlist_play</i>
@@ -111,17 +98,12 @@
 </template>
 <script>
 import Playlist from './components/Playlist'
-const calculateTime = (secs) => {
-  const minutes = Math.floor(secs / 60);
-  const seconds = Math.floor(secs % 60);
-  const returnedSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
-  return `${minutes}:${returnedSeconds}`;
-}
+import Player from './components/Player'
 
 export default {
     name: 'Spotify',
     components: {
-        Playlist
+        Playlist, Player
     },
     data() {
         return {
@@ -168,51 +150,12 @@ export default {
     },
     methods: {
         playSong(){
-            const audio = this.$refs.audio
-            if(this.playState === 'play') {
-              audio.play();
-              this.playState = 'pause';
+            let ctx = this
+            if(ctx.playState === 'play') {
+              ctx.playState = 'pause';
             } else {
-              audio.pause();
-              this.playState = 'play';
+              ctx.playState = 'play';
             }
-        }
-    },
-    mounted(){
-        const audio = this.$refs.audio
-        const durationContainer = this.$refs.duration
-        const currentTimeContainer = this.$refs.current
-
-
-        const displayDuration = () => {
-          durationContainer.textContent = calculateTime(audio.duration);
-        }
-        if (audio.readyState > 0) {
-          displayDuration();
-        } else {
-          audio.addEventListener('loadedmetadata', () => {
-            displayDuration();
-          });
-        }
-
-        const seekSlider = this.$refs.seekslider
-
-        seekSlider.addEventListener('input', () => {
-          currentTimeContainer.textContent = calculateTime(seekSlider.value);
-        });
-
-        const setSliderMax = () => {
-          seekSlider.max = Math.floor(audio.duration);
-        }
-
-        if (audio.readyState > 0) {
-          displayDuration();
-          setSliderMax();
-        } else {
-          audio.addEventListener('loadedmetadata', () => {
-            displayDuration();
-            setSliderMax();
-          });
         }
     }
 }
