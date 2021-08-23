@@ -11,7 +11,7 @@
                                     <i class="material-icons text-white text-2xl">play_arrow</i>
                                 </div>
                             </div>
-                            <div class="bg-light rounded-lf shadow-md w-full h-auto p-5">
+                            <div class="bg-light rounded shadow-md w-full h-auto p-5">
                                 <img :src="mix.src" class="h-auto w-full shadow mb-2">
                                 <h1 class="text-sm font-semibold text-white tracking-wide">{{mix.title}}</h1>
                                 <h2 class="text-xs line-clamp-2 text-lightest tracking-wide pt-2">{{mix.artist}}</h2>

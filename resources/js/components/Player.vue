@@ -4,7 +4,7 @@
         class="w-3/4 flex items-center justify-center mt-3"
     >
         <audio style="display:none;" preload="metadata" loop ref="audio">
-            <source src="fav.m4a" type="audio/mpeg" />
+            <source :src="song.audio" type="audio/mpeg" />
         </audio>
         <p class="text-xs text-lightest mr-1" v-html="elapsedTime()">0:00</p>
         <input
@@ -20,9 +20,13 @@
 <script>
 export default {
     props: {
-        playState: String
+        playState: String,
+        song: Object
     },
     watch: {
+        song: function(){
+            this.$refs.audio.load();
+        },
         playState: function() {
             this.toggleAudio();
         },

@@ -17,7 +17,7 @@
                         <i class="material-icons h-8 w-8 mr-3"> add_box </i>
                         <p> Crear lista</p>
                     </button>
-                    <button class="flex text-sm items-center justify-start text-white opacity-75 hover:opacity-100">
+                    <button @click="setID = 'favs'" class="flex text-sm items-center justify-start text-white opacity-75 hover:opacity-100">
                         <img src="/images/favorites.png" class="h-8 w-8 mr-3" />
                         <p class="truncate"> Canciones que te gustan</p>
                     </button>
@@ -62,8 +62,8 @@
                     </div>
                 </div>
                 <!-- Playlists -->
-                <Playlist :playlist="mixes" />
-                <Playlist :playlist="recents" />
+                <Mainwindow v-if="setID == 'home'" />
+                <Favorites v-if="setID == 'favs'" />
             </div>
         </div>
         <!-- Play skip etc -->
@@ -85,7 +85,7 @@
                     <button class="text-lightest hover:text-white"><i class="material-icons text-base">skip_next</i></button>
                     <button class="mx-3 text-lightest hover:text-white"><i class="material-icons text-base">repeat</i></button>
                 </div>
-                <Player :playState="playState" />
+                <Player :song="playing" :playState="playState" />
             </div>
             <div class="flex items-center w-1/4 justify-end">
                 <i class="material-icons text-lightest hover:text-white">playlist_play</i>
@@ -97,16 +97,19 @@
     </div>
 </template>
 <script>
-import Playlist from './components/Playlist'
 import Player from './components/Player'
+import Mainwindow from './components/Mainwindow'
+import Favorites from './components/Favorites'
+import { EventBus } from './event-bus';
 
 export default {
     name: 'Spotify',
     components: {
-        Playlist, Player
+        Player, Mainwindow, Favorites
     },
     data() {
         return {
+            playing: {},
             playState: 'play',
             setID: 'home',
             pages: [
@@ -132,23 +135,20 @@ export default {
                 {name: 'Mexican Nortechno'},
             ],
             showDropdown:false,
-            mixes: [
-                {src: 'images/playlists/daily1.jfif', title: 'Daily Mix 1', artist: 'BonHaus, Mr. Pig, Zoé y más.'},
-                {src: 'images/playlists/daily2.jfif', title: 'Daily Mix 2', artist: 'Bronco, Juan Gabriel, Lucero y más'},
-                {src: 'images/playlists/daily3.jfif', title: 'Daily Mix 3', artist: 'Daniella Babbitt, Gina Ordonieva, Bernadette Boulet y más'},
-                {src: 'images/playlists/daily4.jfif', title: 'Daily Mix 4', artist: 'GRGE, Boris Brejcha, Zeds Dead y más'},
-                {src: 'images/playlists/daily5.jfif', title: 'Daily Mix 5', artist: 'Chus & Ceballos, Sofi Tuker, Route 94 y más'},
-            ],
-            recents: [
-                {src: 'images/playlists/recent1.jfif', title: 'mamá cool', artist: 'Lo más alternativo para una mamá muy mo-der-na.'},
-                {src: 'images/playlists/recent2.jfif', title: 'Club Electropical', artist: 'Deja a tu cuerpo cibrar con el sabor electropical de distintas latitudes.'},
-                {src: 'images/playlists/recent3.jfif', title: 'Club de Playa', artist: 'Sabor tropical multicolor para disfrutar junto al mar.'},
-                {src: 'images/playlists/recent4.jfif', title: 'Onda Indietrónica', artist: 'La orilla donde el indie se fusiona con la electrónica.'},
-                {src: 'images/playlists/recent5.jfif', title: 'Pulso Latino', artist: 'Desde México hasta Argentina, el hogar de los beats latinoamericanos. Foto: Tom & Collins, Cato Anaya'},
-            ],
         }
     },
+    mounted(){
+        EventBus.$on('play', this.changeSong);
+    },
     methods: {
+        changeSong(cancion){
+            let self = this
+            this.playing = cancion
+            setTimeout(function(){
+             self.playSong()
+            }, 1000);
+
+        },
         playSong(){
             let ctx = this
             if(ctx.playState === 'play') {
@@ -157,6 +157,6 @@ export default {
               ctx.playState = 'play';
             }
         }
-    }
+    },
 }
 </script>
