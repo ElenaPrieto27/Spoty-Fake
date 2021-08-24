@@ -25,10 +25,10 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/spotify', function () {
-    return Inertia::render('Mainwindow'); 
+    return Inertia::render('Welcome'); 
 })->name('spotify');
 
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/spotify2', function () {
-    return Inertia::render('Mainwindow'); 
+    return Inertia::render('Welcome'); 
 })->name('spotify2');
