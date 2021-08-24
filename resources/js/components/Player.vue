@@ -6,7 +6,7 @@
         <audio style="display:none;" preload="metadata" loop ref="audio">
             <source :src="song.audio" type="audio/mpeg" />
         </audio>
-        <p class="text-xs text-lightest mr-1" v-html="elapsedTime()">0:00</p>
+        <p class="text-xs text-lightest mr-1" v-html="elapsedTime()"></p>
         <input
             type="range"
             id="seek-slider"
@@ -14,7 +14,7 @@
             v-model="playbackTime"
             :max="audioDuration"
         />
-        <p class="text-xs text-lightest ml-1" v-html="totalTime()">0:00</p>
+        <p class="text-xs text-lightest ml-1" v-html="totalTime()"></p>
     </div>
 </template>
 <script>
@@ -26,6 +26,9 @@ export default {
     watch: {
         song: function(){
             this.$refs.audio.load();
+            if(this.playState === 'pause'){
+                this.$refs.audio.play();
+            }
         },
         playState: function() {
             this.toggleAudio();

@@ -1,8 +1,8 @@
 <template>
     <div class="bg-dark h-screen">
         <div class="flex" style="height: 88vh;">
-            <!-- Sidebar  -->
-            <div class="w-56 bg-black h-full flex-none">
+            <!-- Sidebar -->
+            <div class="w-60 bg-black h-full flex-none">
                 <div class="p-6">
                     <img src="/images/Spotify_Logo_RGB_White.png" class="h-10">
                 </div>
@@ -17,7 +17,7 @@
                         <i class="material-icons h-8 w-8 mr-3"> add_box </i>
                         <p> Crear lista</p>
                     </button>
-                    <button @click="setID = 'favs'" class="flex text-sm items-center justify-start text-white opacity-75 hover:opacity-100">
+                    <button @click="setID = 'favs'" :class="`flex text-sm items-center justify-start text-white opacity-75 hover:opacity-100 ${setID === 'favs' ? 'bg-light text-white' : 'text-lightest'}`">
                         <img src="/images/favorites.png" class="h-8 w-8 mr-3" />
                         <p class="truncate"> Canciones que te gustan</p>
                     </button>
@@ -47,37 +47,51 @@
                         </button>
                     </div>
                     <div class="relative">
-                        <button @click="showDropdown=!showDropdown" class="bg-light rounded-full py-1 px-2 flex items-center">
-                            <img src="/images/me.jpg" class="rounded-full h-6 w-6 mr-2" />
-                            <p class="text-white font-semibold truncate mr-3">{{usuario.name}}</p>
-                            <i v-if="!showDropdown" class="material-icons text-white">arrow_drop_down</i>
-                            <i v-else class="material-icons text-white">arrow_drop_up</i>
-                        </button>
-                        <div v-if="showDropdown" class="absolute bg-light w-full rounded mt-1 z-50">
-                            <button @click="showDropdown=!showDropdown" class="w-full py-2 pl-3 text-white text-left hover:bg-lightest text-sm opacity-75 hover:opacity-100">Cuenta</button>
-                            <button @click="showDropdown=!showDropdown" class="w-full py-2 pl-3 text-white text-left hover:bg-lightest text-sm opacity-75 hover:opacity-100">Perfil</button>
-                            <button @click="showDropdown=!showDropdown" class="w-full py-2 pl-3 text-white text-left hover:bg-lightest text-sm opacity-75 hover:opacity-100">Cerrar sesión</button>
+                        <div class="relative">
+                                <jet-dropdown align="right" width="48">
+                                    <template #trigger>
+                                        <button @click="showDropdown = !showDropdown" class="bg-light rounded-full py-1 px-2 flex items-center cursor-pointer">
+                                            <img :src="$page.props.user.profile_photo_url" :alt="$page.props.user.name" class="rounded-full h-6 w-6 mr-2" />
+                                            <p class="text-white font-semibold truncate mr-3">{{ $page.props.user.name }}</p>
+                                            <i v-if="!showDropdown" class="material-icons text-white">arrow_drop_down</i>
+                                            <i v-else class="material-icons text-white">arrow_drop_up</i>
+                                        </button>
+                                    </template>
+                                    <template #content>
+                                        <jet-dropdown-link :href="route('profile.show')">
+                                            Perfil
+                                        </jet-dropdown-link>
 
-                        </div>
+                                        <div class="border-t border-gray-100"></div>
+
+                                        <!-- Authentication -->
+                                        <form @submit.prevent="logout">
+                                            <jet-dropdown-link as="button">
+                                                Cerrar sesión
+                                            </jet-dropdown-link>
+                                        </form>
+                                    </template>
+                                </jet-dropdown>
+                            </div>
                     </div>
                 </div>
                 <!-- Playlists -->
                 <Mainwindow v-if="setID == 'home'" />
-                <Favorites v-if="setID == 'favs'">
-                    <template :usuario="usuario.name"></template>
-                </Favorites>
+                <Favorites v-if="setID == 'favs'" />
             </div>
         </div>
         <!-- Play skip etc -->
-        <div class="w-full flex items-center justify-between px-3 bg-light border-t border-dark" style="height:12vh">
+        <div class="w-full flex items-center justify-between px-3 bg-light border-t select-none border-dark" style="height:12vh">
             <div class="flex items-center w-1/4">
-            <a href="#"><img src="images/playlists/lanina.jfif" alt="album cover" class="h-14" style="width:100%;"></a>
+            <div class="flex" v-if="playing.audio">
+            <a href="#"><img :src="`images/playlists/${playing.imagen}.jfif`" alt="album cover" class="h-14 w-14"></a>
                 <div class="ml-3" style="width:60%;">
-                    <h1 class="text-sm text-white tracking-wide truncate">La Niña del Volcán (Polocorp Remix)</h1>
-                    <h2 class="text-xs text-lightest tracking-wide">YoSoyMatt, Polocorp</h2>
+                    <h1 class="text-sm text-white tracking-wide truncate">{{playing.name}}</h1>
+                    <h2 class="text-xs text-lightest tracking-wide">{{playing.artist}}</h2>
                 </div>
                 <i class="material-icons text-green mx-4">favorite</i>
                 <i class="material-icons text-xl text-lightest hover:text-white">picture_in_picture_alt</i>
+            </div>
             </div>
             <div class="flex flex-col justify-center w-2/4 items-center">
                 <div class="flex items-center">
@@ -99,18 +113,17 @@
     </div>
 </template>
 <script>
-import Player from './components/Player'
-import Mainwindow from './components/Mainwindow'
-import Favorites from './components/Favorites'
-//import { EventBus } from '../event-bus.js';
+import Player from '../components/Player'
+import Mainwindow from '../components/Mainwindow'
+import Favorites from '../components/Favorites'
+import JetDropdown from '@/Jetstream/Dropdown.vue'
+import JetDropdownLink from '@/Jetstream/DropdownLink.vue'
+import { inject, onMounted } from "vue";
 
 export default {
     name: 'Spotify',
-    props:[
-        'usuario'
-    ],
     components: {
-        Player, Mainwindow, Favorites
+        Player, Mainwindow, Favorites, JetDropdown, JetDropdownLink,
     },
     data() {
         return {
@@ -140,18 +153,23 @@ export default {
                 {name: 'Mexican Nortechno'},
             ],
             showDropdown:false,
+            user:''
         }
     },
     mounted(){
-        //EventBus.$on('play', this.changeSong);
-    },
+        let self = this
+      const emitter = inject("emitter")
+      emitter.on("play", function(song) {
+        self.changeSong(song)
+      })
+  },
     methods: {
+        logout() {
+                this.$inertia.post(route('logout'));
+            },
         changeSong(cancion){
             let self = this
             this.playing = cancion
-            setTimeout(function(){
-             self.playSong()
-            }, 1000);
 
         },
         playSong(){

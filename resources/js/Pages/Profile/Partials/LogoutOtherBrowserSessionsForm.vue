@@ -1,16 +1,16 @@
 <template>
     <jet-action-section>
         <template #title>
-            Browser Sessions
+            Sesiones de navegador
         </template>
 
         <template #description>
-            Manage and log out your active sessions on other browsers and devices.
+            Administra y cierra sesión de tus otras sesiones activas en otros navegadores y dispositivos.
         </template>
 
         <template #content>
             <div class="max-w-xl text-sm text-gray-600">
-                If necessary, you may log out of all of your other browser sessions across all of your devices. Some of your recent sessions are listed below; however, this list may not be exhaustive. If you feel your account has been compromised, you should also update your password.
+                De ser necesario, puedes cerrar sesión de otros navegadores en todos tus dispositivos. Se listan algunas de tus sesiones más recientes; sin embargo, esta lista puede no ser exhaustiva. Si crees que tu cuenta ha sido comprometida, también deberías cambiar tu contraseña.
             </div>
 
             <!-- Other Browser Sessions -->
@@ -36,7 +36,7 @@
                                 {{ session.ip_address }},
 
                                 <span class="text-green-500 font-semibold" v-if="session.is_current_device">This device</span>
-                                <span v-else>Last active {{ session.last_active }}</span>
+                                <span v-else>Activa por última vez {{ session.last_active }}</span>
                             </div>
                         </div>
                     </div>
@@ -45,25 +45,25 @@
 
             <div class="flex items-center mt-5">
                 <jet-button @click="confirmLogout">
-                    Log Out Other Browser Sessions
+                    Cerrar sesión en otros navegadores
                 </jet-button>
 
                 <jet-action-message :on="form.recentlySuccessful" class="ml-3">
-                    Done.
+                    Listo.
                 </jet-action-message>
             </div>
 
             <!-- Log Out Other Devices Confirmation Modal -->
             <jet-dialog-modal :show="confirmingLogout" @close="closeModal">
                 <template #title>
-                    Log Out Other Browser Sessions
+                    Cerrar sesión en otros navegadores
                 </template>
 
                 <template #content>
-                    Please enter your password to confirm you would like to log out of your other browser sessions across all of your devices.
+                    Por favor, ingresa tu contraseña para confirmar que deseas cerrar tus otras sesiones.
 
                     <div class="mt-4">
-                        <jet-input type="password" class="mt-1 block w-3/4" placeholder="Password"
+                        <jet-input type="password" class="mt-1 block w-3/4" placeholder="Contraseña"
                                     ref="password"
                                     v-model="form.password"
                                     @keyup.enter="logoutOtherBrowserSessions" />
@@ -74,11 +74,11 @@
 
                 <template #footer>
                     <jet-secondary-button @click="closeModal">
-                        Cancel
+                        Cancelar
                     </jet-secondary-button>
 
                     <jet-button class="ml-2" @click="logoutOtherBrowserSessions" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                        Log Out Other Browser Sessions
+                        Cerrar otras sesiones
                     </jet-button>
                 </template>
             </jet-dialog-modal>
