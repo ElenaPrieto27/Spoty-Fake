@@ -12,7 +12,7 @@ use Inertia\Inertia;
 | Here is where you can register web routes for your application. These
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
-|
+|el paco
 */
 
 Route::get('/', function () {
@@ -27,3 +27,8 @@ Route::get('/', function () {
 Route::middleware(['auth:sanctum', 'verified'])->get('/spotify', function () {
     return Inertia::render('Mainwindow'); 
 })->name('spotify');
+
+
+Route::middleware(['auth:sanctum', 'verified'])->get('/spotify2', function () {
+    return Inertia::render('Mainwindow'); 
+})->name('spotify2');
