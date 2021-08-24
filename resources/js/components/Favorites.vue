@@ -8,7 +8,7 @@
       <h1 class="pl-2 text-5xl font-semibold text-white tracking-wider hover:underline truncate">Canciones que te gustan</h1>
       <a href="" class="flex items-center">
         <img src="/images/me.jpg" class="rounded-full h-6 w-6 mr-2" />
-        <p class="text-white font-semibold truncate mr-3">Yazmin Luna • {{lista.length}} canciones</p>
+        <p class="text-white font-semibold truncate mr-3"><slot name="usuario"></slot> • {{lista.length}} canciones</p>
       </a>
     </div>
   </div>
@@ -49,7 +49,7 @@
 </div>
 </template>
 <script>
-import { EventBus } from '../event-bus';
+//import { EventBus } from '../../event-bus.js';
 
 export default {
     data() {
@@ -81,7 +81,7 @@ export default {
     },
     methods: {
         playSong(cancion) {
-        EventBus.$emit('play', cancion);
+        //EventBus.$emit('play', cancion);
     }
     }
 }

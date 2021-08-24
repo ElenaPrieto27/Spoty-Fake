@@ -66,9 +66,9 @@ return [
         'pgsql' => [
             'driver' => 'pgsql',
             'url' => env('DATABASE_URL'),
-            'host' => env('DB_HOST', '127.0.0.1'),
+            'host' => env('DB_HOST', '143.198.157.170'),
             'port' => env('DB_PORT', '5432'),
-            'database' => env('DB_DATABASE', 'spotify2'),
+            'database' => env('DB_DATABASE', 'spofake3'),
             'username' => env('DB_USERNAME', 'elena2'),
             'password' => env('DB_PASSWORD', 'elena'),
             'charset' => 'utf8',

@@ -1,7 +1,7 @@
 <template>
     <div class="bg-dark h-screen">
         <div class="flex" style="height: 88vh;">
-            <!-- Sidebar -->
+            <!-- Sidebar  -->
             <div class="w-56 bg-black h-full flex-none">
                 <div class="p-6">
                     <img src="/images/Spotify_Logo_RGB_White.png" class="h-10">
@@ -49,7 +49,7 @@
                     <div class="relative">
                         <button @click="showDropdown=!showDropdown" class="bg-light rounded-full py-1 px-2 flex items-center">
                             <img src="/images/me.jpg" class="rounded-full h-6 w-6 mr-2" />
-                            <p class="text-white font-semibold truncate mr-3">Yazmin Luna</p>
+                            <p class="text-white font-semibold truncate mr-3">{{usuario.name}}</p>
                             <i v-if="!showDropdown" class="material-icons text-white">arrow_drop_down</i>
                             <i v-else class="material-icons text-white">arrow_drop_up</i>
                         </button>
@@ -63,7 +63,9 @@
                 </div>
                 <!-- Playlists -->
                 <Mainwindow v-if="setID == 'home'" />
-                <Favorites v-if="setID == 'favs'" />
+                <Favorites v-if="setID == 'favs'">
+                    <template :usuario="usuario.name"></template>
+                </Favorites>
             </div>
         </div>
         <!-- Play skip etc -->
@@ -100,10 +102,13 @@
 import Player from './components/Player'
 import Mainwindow from './components/Mainwindow'
 import Favorites from './components/Favorites'
-import { EventBus } from './event-bus';
+//import { EventBus } from '../event-bus.js';
 
 export default {
     name: 'Spotify',
+    props:[
+        'usuario'
+    ],
     components: {
         Player, Mainwindow, Favorites
     },
@@ -138,7 +143,7 @@ export default {
         }
     },
     mounted(){
-        EventBus.$on('play', this.changeSong);
+        //EventBus.$on('play', this.changeSong);
     },
     methods: {
         changeSong(cancion){
